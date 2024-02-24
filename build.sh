@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eo pipefail
 
+VERSION="0.1"
+
 export CGO_ENABLED=0
 export GOFLAGS=-trimpath
 
@@ -179,6 +181,6 @@ EOF
 chmod 0755 $OUT/usr/local/bin/setup-rootless-containerd.sh
 
 
-tar -cvzf containerd-deployable.tar.gz --owner=root --group=root --transform 's/^out\///g' out/*
+tar -cvzf containerd-deployable-${VERSION}.tar.gz --owner=root --group=root --transform 's/^out\///g' out/*
 
 popd
