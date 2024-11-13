@@ -28,7 +28,7 @@ release page for pre-built tarballs.
 Extract the tarball on the target system from the root directory.
 
 ```console
-$ sudo tar -C / -xvzf containerd-deployable-0.1.tar.gz
+$ sudo tar -C / -xvzf containerd-deployable-0.2.tar.gz
 ```
 
 Become a normal user you want to run containerd as and run...

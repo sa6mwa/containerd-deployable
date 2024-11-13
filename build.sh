@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eo pipefail
 
-VERSION="0.1"
+VERSION="0.2"
 
 export CGO_ENABLED=0
 export GOFLAGS=-trimpath
@@ -127,8 +127,27 @@ WantedBy=default.target
 EOF
 
 cat <<EOF > $OUT/usr/local/bin/setup-rootless-containerd.sh
-#!/bin/sh
+#!/bin/bash
 set -uo pipefail
+
+# https://rootlesscontaine.rs/getting-started/common/apparmor/
+if [ ! -e /etc/apparmod.d/usr.local.bin.rootlesskit ]; then
+	 echo "INFO: Configuring AppArmor, adding usr.local.bin.rootlesskit"
+	 cat <<EOT | sudo tee "/etc/apparmor.d/usr.local.bin.rootlesskit"
+abi <abi/4.0>,
+include <tunables/global>
+
+/usr/local/bin/rootlesskit flags=(unconfined) {
+  userns,
+
+  # Site-specific additions and overrides. See local/README for details.
+  include if exists <local/usr.local.bin.rootlesskit>
+}
+EOT
+	echo "INFO: Restarting apparmor.service"
+	sudo systemctl restart apparmor.service
+fi
+
 echo "INFO: Running containerd-rootless-setuptool.sh check"
 
 OUTPUT=\$(containerd-rootless-setuptool.sh check 2>&1)
@@ -179,7 +198,6 @@ sudo loginctl enable-linger \$(whoami)
 echo "INFO: To install buildkit, run the following command: containerd-rootless-setuptool.sh install-buildkit"
 EOF
 chmod 0755 $OUT/usr/local/bin/setup-rootless-containerd.sh
-
 
 tar -cvzf containerd-deployable-${VERSION}.tar.gz --owner=root --group=root --transform 's/^out\///g' out/*
 
