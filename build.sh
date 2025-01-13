@@ -157,7 +157,7 @@ set -e
 if echo "\$OUTPUT" | grep -q -e ERROR -e WARNING; then
 	if echo "\$OUTPUT" | grep -q "Needs systemd"; then
 	 		echo "INFO: Copying /usr/local/share/containerd/systemd-user.service to /etc/systemd/system/user@\$(id -u).service"	
-	 		sudo cp /usr/local/share/containerd/systemd-user.service /etc/systemd/system/ /etc/systemd/system/user@\$(id -u).service
+	 		sudo cp /usr/local/share/containerd/systemd-user.service /etc/systemd/system/user@\$(id -u).service
 	 		echo "INFO: Running sudo systemctl daemon-reload"
 	 		sudo systemctl daemon-reload
 			echo "INFO: Running sudo systemctl enable user@\$(id -u).service"
