@@ -2,7 +2,7 @@
 set -eo pipefail
 set -x
 
-VERSION="0.2"
+VERSION="0.3"
 
 export CGO_ENABLED=0
 export GOFLAGS=-trimpath
