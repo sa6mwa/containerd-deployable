@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eo pipefail
+set -x
 
 VERSION="0.2"
 
@@ -41,9 +42,9 @@ done
 
 # build libslirp
 pushd libslirp
-meson build --default-library=static
-ninja -C build
-LIBSLIRP_A=$(realpath build)
+meson build --default-library=static --prefix $(realpath output)
+ninja -C build install
+LIBSLIRP_PC=$(realpath output/lib/x86_64-linux-gnu/pkgconfig)
 popd
 
 # build runc
@@ -67,7 +68,7 @@ popd
 # build slirp4netns
 pushd slirp4netns
 ./autogen.sh
-./configure --prefix=$OUT/usr LDFLAGS="-static -L${LIBSLIRP_A}"
+./configure --prefix=$OUT/usr LDFLAGS="-static" PKG_CONFIG_PATH="$LIBSLIRP_PC"
 make
 make install
 popd
