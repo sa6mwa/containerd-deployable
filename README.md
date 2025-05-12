@@ -49,6 +49,14 @@ modern systems, this is not necessary. If
 will run `containerd-rootless-setuptool.sh install` and enable
 lingering mode for the user (`sudo loginctl enable-linger $(whoami)`).
 
+If `newuidmap` is missing, you may need to install it, then try re-running
+`setup-rootless-containerd.sh`:
+
+```
+sudo apt-get install uidmap
+setup-rootless-containerd.sh
+```
+
 When complete, you should be able to run a container image from
 `docker.io`...
 
