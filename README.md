@@ -10,6 +10,9 @@ The `build.sh` script in this repository builds all components necessary to run 
 * rootlesskit
 * slirp4netns
 
+The build uses pinned upstream release tags instead of cloning the latest commit from each repository, so repeated builds are deterministic and less likely to break on upstream changes.
+Before packaging, the build verifies that staged ELF binaries do not require a runtime loader, and fails if any dynamically linked binary would end up in the tarball.
+
 All components will be statically linked and compressed into a tarball
 for easy distribution. The tarball can be extracted under the root
 directory of the target system and the binaries will end up in
@@ -18,6 +21,12 @@ directory of the target system and the binaries will end up in
 
 ```console
 $ ./build.sh
+```
+
+If dependencies are missing, the script will print what it could not find and exit. On Debian/Ubuntu systems you can let it install the required packages with:
+
+```console
+$ AUTO_INSTALL_DEPS=1 ./build.sh
 ```
 
 The script will create a tarball in the `build` directory. See the
